@@ -34,9 +34,7 @@ func main() {
 
 	_ = ioutil.WriteFile("file.json", body, 0644)
 
-	//********************************************//
-
-	//var x comments
+	// Reading only comments
 	file, _ := ioutil.ReadFile("file.json")
 	data := comments{}
 	_ = json.Unmarshal(file, &data)
