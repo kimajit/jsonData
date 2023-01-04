@@ -13,7 +13,6 @@ jobs:
       - image: circleci/golang:1.15.8
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    
     steps:
       - checkout
       - restore_cache:
@@ -33,40 +32,7 @@ jobs:
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
       - store_test_results:
           path: /tmp/test-reports
-      - run:
-          name: Creating Dummy Artifacts
-          command: |
-            echo "my artifact file" > /tmp/art-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/art-2;
 
-      - store_artifacts:
-          path: /tmp/art-1
-          destination: artifact-file
-
-      - store_artifacts:
-          path: /tmp/artifacts
-      - run: github info -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}"
-      - run:
-          command: |
-            github release \
-              --user "${CIRCLE_PROJECT_USERNAME}" \
-              --repo "${CIRCLE_PROJECT_REPONAME}" \
-              --tag "${CIRCLE_TAG}" \
-              --name "Release ${CIRCLE_TAG}" \
-              --description "Automated release of the latest version" \
-              --pre-release
-      - run:
-          command: |
-            for artifact_file in /tmp/workspace/artifacts/*; do
-              github upload \
-                --user "${CIRCLE_PROJECT_USERNAME}" \
-                --repo "${CIRCLE_PROJECT_REPONAME}" \
-                --tag "${CIRCLE_TAG}" \
-                --name $(basename "${artifact_file}") \
-                --file "${artifact_file}"
-            done
-      
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
